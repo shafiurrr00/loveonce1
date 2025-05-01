@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For You ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffb3d9;
+      color: #d60087;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .lyrics-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffcce5;
+      padding: 2rem;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 700px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+      font-size: 1.8rem;
+      z-index: 10;
+      min-height: 100px;
+    }
+
+    .lyric-line {
+      display: inline-block;
+      white-space: pre-wrap;
+      border-right: 2px solid #d60087;
+      animation: blink-caret 0.7s step-end infinite;
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #d60087; }
+    }
+
+    .play-button {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #d60087;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .flower {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      pointer-events: none;
+      z-index: 1;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<audio id="bg-music" src="yungkai.mp3" preload="auto"></audio>
+<div class="lyrics-container"><div class="lyric-line" id="lyricLine"></div></div>
+<button class="play-button" onclick="playMusic()">Play Music</button>
+
+<script>
+  const audio = document.getElementById("bg-music");
+  const lyricEl = document.getElementById("lyricLine");
+
+  const lyrics = [
+    { time: 0, text: "Your morning eyes, I could stare like watching stars" },
+    { time: 6.5, text: "I could walk you by, and I'll tell without a thought" },
+    { time: 13.2, text: "You'd be mine, would you mind if I took your hand tonight?" },
+    { time: 21.2, text: "Know you're all that I want this life" },
+    { time: 24.5, text: "" },
+    { time: 30.0, text: "I'll imagine we fell in love" },
+    { time: 32.5, text: "I'll nap under moonlight skies with you" },
+    { time: 34.0, text: "I think I'll picture us, you with the waves" },
+    { time: 38.5, text: "The ocean's colors on your face" },
+    { time: 41.0, text: "I'll leave my heart with your air" },
+    { time: 47.5, text: "So let me fly with you" },
+    { time: 51.0, text: "Will you be forever with me?" },
+    { time: 57.5, text: ".......made by shafiur <3........" },
+    { time: 63.0, text: "My little gift for you my love. \ni know its nothing infront of what you gave to me\nbut still i gave my knowledge to this so i can atleast spark a little smile on \nyour face. With love, your Shafiur." },
+    { time: 79.5, text: "you can exit this now. it will play the whole song right now. \nso if you want to listen to the whole song feel free to be here ^_^" },
+  ];
+
+  let currentLine = 0;
+  let typing = false;
+
+  function typeLine(text, callback) {
+    typing = true;
+    lyricEl.textContent = '';
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < text.length) {
+        lyricEl.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(interval);
+        typing = false;
+        if (callback) callback();
+      }
+    }, 40);
+  }
+
+  function syncLyrics() {
+    if (currentLine >= lyrics.length) return;
+    const currentTime = audio.currentTime;
+    const nextLine = lyrics[currentLine];
+    if (currentTime >= nextLine.time && !typing) {
+      typeLine(nextLine.text);
+      currentLine++;
+    }
+  }
+
+  audio.addEventListener("timeupdate", syncLyrics);
+
+  function createFlower() {
+    const flower = document.createElement("img");
+    flower.src = "trans.png"; // Ensure this file exists
+    flower.className = "flower";
+    flower.style.left = Math.random() * 100 + "vw";
+    flower.style.animationDuration = (Math.random() * 3 + 3) + "s";
+    document.body.appendChild(flower);
+    setTimeout(() => flower.remove(), 6000);
+  }
+
+  setInterval(createFlower, 500);
+
+  function playMusic() {
+    audio.play();
+    document.querySelector(".play-button").style.display = "none";
+  }
+</script>
+
+</body>
+</html>
